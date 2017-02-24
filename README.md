@@ -1,2 +1,3 @@
-# concourse
-For Concourse workshop-meetups
+# Concourse training
+
+This repo is for Concourse workshops and meetups.

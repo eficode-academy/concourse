@@ -9,15 +9,15 @@
 Welcome, Cadet.
 
 This walkthrough assumes you've already got a Concourse set up and ready
-to go. If you don't, the most important thing is that you don't panic
-and go through the [installation guide](installing.html) before coming
-back here.
+to go. We have made a shared concourse available for this workshop. The URL will be shown on the slides.
+
+We also assume that you have a GitHub account. If you don't yet, no worries. It takes only a minute to get one.
 
 ## Getting Set Up
 
 First, let's get you a copy of your training materials.
 
-Fork [this repository](https://github.com/concourse/flight-school) on
+Fork the repo [https://github.com/concourse/flight-school](https://github.com/concourse/flight-school) on
 GitHub into your own account. This will give you somewhere to keep your
 work.
 
@@ -32,21 +32,7 @@ $ git clone https://github.com/(your username)/flight-school
 
 
 This is a simple [Ruby](https://www.ruby-lang.org) project that will let
-you get a feel for flying. Let's check everything is working by running
-the tests locally.
-
-
-```sh
-$ cd flight-school
-$ bundle install
-$ bundle exec rspec
-```
-
-If everything is working then you should see a few green dots on the
-screen to let you know that the tests are passing. If something failed
-then make sure to fix it and get the tests green before continuing. For
-example, if you're missing the `bundle` executable then you'll need to
-run `gem install bundler`.
+you get a feel for flying. We don't actually need Ruby locally to work with this as Concourse will be doing all the heavy lifting.
 
 
 ## First Steps
@@ -263,7 +249,7 @@ useful for running builds so let's pick one that is.
 Docker maintains a collection of Docker images for common languages.
 Let's use the `ruby` image at version `2.3.0`. We can specify that the
 task should run with this image by updating the
-[`image_resource`](running-tasks.html#image_resource) block in our
+[`image_resource`](http://concourse.ci/running-tasks.html#image_resource) block in our
 `build.yml` like so:
 
 
@@ -278,7 +264,7 @@ image_resource:
 
 
 
-Let's try running that.
+Let's try running that. Make sure your current working directory is inside the flight-school folder and the build.yml file is located there.
 
 
 
@@ -398,7 +384,7 @@ Uploading that:
 
 
 ```sh
-fly -t ci set-pipeline -p flight-school -c ci/pipeline.yml
+fly -t ci set-pipeline -p <flight-school -c ci/pipeline.yml
 ...
 pipeline created!
 you can view your pipeline here: https://(your concourse url)/pipelines/flight-school
@@ -440,76 +426,6 @@ that breaks the build and then another one that fixes it again.
 
 
 
-
-
-
-## Extending the Pipeline
-
-What you've seen so far is the very essence of the way pipelines work in
-Concourse: a new version of a resource appears and then a job runs to do
-something with that new version. This is the very start of a pipeline.
-Let's keep adding to it and have it do more things for us.
-
-
-### Deploying your Application
-
-We've shown ourselves that we have a working application. Let's show the
-rest of the world by deploying the application to a PaaS (Platform as a
-Service).
-
-The author of this walkthrough is most familiar with [Pivotal Web
-Services](https://run.pivotal.io/) (PWS). So that's what this guide is
-going to use. Feel free to use whichever deployment environment you'd
-like to use (such as Heroku, etc.). The mechanics and placement in the
-pipeline will be similar for all of them.
-
-Follow [this guide](https://docs.run.pivotal.io/starting/) to get
-yourself set up with a PWS account and push some sample applications.
-There's a 60 day free trial so don't worry about this costing you
-anything.
-
-Now, that you're familiar with how to deploy an application to PWS,
-let's have the pipeline do all the hard work for us. First, let's add a
-resource for the pipeline to interact with.
-
-
-
-```yaml
-- name: staging-app
-  type: cf
-  source:
-    api: https://api.run.pivotal.io
-    username: ((your cf username))
-    password: ((your cf password))
-    organization: ((your cf organization))
-    space: ((your cf space))
-```
-
-
-
-Then, in our job, we can push our application.
-
-
-
-```yaml
-- name: test-app
-  plan:
-  - get: flight-school
-    trigger: true
-  - task: tests
-    file: flight-school/build.yml
-  - put: staging-app
-    params:
-      manifest: flight-school/manifest.yml
-```
-
-
-
-Now, if we run the job again we'll see that after the tests have passed
-that Concourse deploys our application for the world to see. Try pushing
-some commits to the repository and seeing that they are automatically
-tested and pushed. (For example, try adding or removing a U.S. airport
-code from the list).
 
 
 

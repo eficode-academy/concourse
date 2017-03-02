@@ -384,7 +384,7 @@ Uploading that:
 
 
 ```sh
-fly -t ci set-pipeline -p <flight-school -c ci/pipeline.yml
+fly -t ci set-pipeline -p flight-school -c ci/pipeline.yml
 ...
 pipeline created!
 you can view your pipeline here: https://(your concourse url)/pipelines/flight-school

@@ -62,7 +62,7 @@ Ok, let's target and log in to our Concourse.
 
 
 ```sh
-$ fly -t ci login -c (your concourse URL)
+$ fly -t meetup login -c (your concourse URL)
 ```
 
 The `-t` flag is the name we'll use to refer to this instance in the
@@ -75,7 +75,7 @@ Right, let's try running the current project in Concourse.
 
 
 ```sh
-$ fly -t ci execute
+$ fly -t meetup execute
 error: the required flag '-c, --config' was not specified
 ```
 
@@ -83,7 +83,7 @@ error: the required flag '-c, --config' was not specified
 Huh. Well then, let's give it that flag with a file that it wants.
 
 ```sh
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 error: invalid argument for flag '-c, --config' (expected flaghelpers.PathFlag): path 'build.yml' does not exist
 ```
 
@@ -95,7 +95,7 @@ Alright, so we need a file called `build.yml`.
 
 ```sh
 $ touch build.yml
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 error: invalid task configuration:
   missing 'platform'
   missing path to executable to run
@@ -149,7 +149,7 @@ Ok, let's save that in `build.yml` and run our command again.
 
 
 ```sh
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 executing build 107401
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -198,7 +198,7 @@ Let's give this new script a whirl.
 
 
 ```sh
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 executing build 107401
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -227,7 +227,7 @@ Running again gives us:
 
 
 ```sh
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 executing build 107401
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -269,7 +269,7 @@ Let's try running that. Make sure your current working directory is inside the f
 
 
 ```sh
-$ fly -t ci execute -c build.yml
+$ fly -t meetup execute -c build.yml
 executing build 107418
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -384,7 +384,7 @@ Uploading that:
 
 
 ```sh
-fly -t ci set-pipeline -p flight-school -c ci/pipeline.yml
+fly -t meetup set-pipeline -p flight-school -c ci/pipeline.yml
 ...
 pipeline created!
 you can view your pipeline here: https://(your concourse url)/pipelines/flight-school

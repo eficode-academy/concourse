@@ -28,6 +28,7 @@ command:
 
 ```sh
 $ git clone https://github.com/(your username)/flight-school
+$ cd flight-school
 ```
 
 
@@ -80,41 +81,23 @@ error: the required flag '-c, --config' was not specified
 ```
 
 
-Huh. Well then, let's give it that flag with a file that it wants.
-
-```sh
-$ fly -t meetup execute -c build.yml
-error: invalid argument for flag '-c, --config' (expected flaghelpers.PathFlag): path 'build.yml' does not exist
-```
+OK. Concourse wants to know what to execute. Well then, let's give it what it wants.
 
 
+Let us create a file called `build.yml`.
 
-Alright, so we need a file called `build.yml`.
-
-
-
-```sh
-$ touch build.yml
-$ fly -t meetup execute -c build.yml
-error: invalid task configuration:
-  missing 'platform'
-  missing path to executable to run
-```
-
-
-
-Surprise, surprise - looks like we can't just give it an empty file. We
-need to write a task definition. A task definition describes a unit of
+We can't just give it an empty file. We need to write a task definition. A task definition describes a unit of
 work to Concourse so that it can execute it.
 
-
+Add the following content to the file:
 
 ```yaml
 platform: linux
 
 image_resource:
   type: docker-image
-  source: {repository: busybox}
+  source: 
+    repository: busybox
 
 inputs:
 - name: flight-school
@@ -122,8 +105,6 @@ inputs:
 run:
   path: ./flight-school/ci/test.sh
 ```
-
-
 
 Let's go through this line by line:
 
@@ -144,8 +125,7 @@ Let's go through this line by line:
     script with a current working directory containing all of your
     inputs as subdirectories.
 
-Ok, let's save that in `build.yml` and run our command again.
-
+Ok, let's save that in `build.yml` and run our execute command again.
 
 
 ```sh
@@ -160,14 +140,17 @@ exec failed: exec: "./flight-school/ci/test.sh": stat ./flight-school/ci/test.sh
 failed
 ```
 
-
-
 Ok, so what happened here. We started a build, uploaded the
 `flight-school` input, and then tried to run the
 `flight-school/ci/test.sh` script. Which isn't there. Oops! Let's write
 that.
 
+```bash
+mkdir ci
+nano ci/test.sh
+```
 
+Add the following content:
 
 ```bash
 #!/bin/bash
@@ -181,9 +164,8 @@ popd
 ```
 
 
-
-This is basically the same commands we ran above in order to run the
-tests locally. The new bits at the start set up a few things. The
+This is basically the same commands we would use in order to run the
+tests locally if we had Ruby installed. The new bits at the start set up a few things. The
 `#!/bin/bash` is a [shebang
 line](https://en.wikipedia.org/wiki/Shebang_(Unix)) that tells the
 operating system that when we execute this file we should run is using
@@ -222,7 +204,7 @@ $ chmod +x ci/test.sh
 
 
 
-Running again gives us:
+Try running again. Notice the new error:
 
 
 
@@ -237,7 +219,6 @@ running flight-school/ci/test.sh
 exec failed: no such file or directory
 failed
 ```
-
 
 
 This message is a little obscure. It's complaining that the shebang
@@ -264,7 +245,7 @@ image_resource:
 
 
 
-Let's try running that. Make sure your current working directory is inside the flight-school folder and the build.yml file is located there.
+Let's try running that. Make sure your current working directory (`pwd`) is the flight-school folder and the build.yml file is located there.
 
 
 
@@ -359,7 +340,7 @@ Pipelines are built up from resources and jobs. Resources are external,
 versioned things such as Git repositories or S3 buckets and jobs are a
 grouping of resources and tasks that actually do the work in the system.
 
-
+Save the following to a `ci/pipeline.yml` file.
 
 ```yaml
 resources:
@@ -377,10 +358,15 @@ jobs:
     file: flight-school/build.yml
 ```
 
+Since the pipeline wants to execute our new `build.yml` file which in turn runs `ci/test.sh` we will need to add, commit and push these files to our repository:
 
+```sh 
+git add .
+git commit -m 'Add build task'
+git push origin master
+```
 
-Uploading that:
-
+Now we are ready to *upload* our pipeline to Concourse:
 
 
 ```sh
@@ -407,8 +393,6 @@ It runs!
 
 Add `trigger: true` to the `get`. Any new versions will trigger the job.
 
-
-
 ```yaml
 jobs:
 - name: test-app
@@ -419,21 +403,5 @@ jobs:
     file: flight-school/build.yml
 ```
 
-
-
-Try pushing a commit to the repository. For extra credit push a commit
+Try pushing another commit to the repository. For extra credit push a commit
 that breaks the build and then another one that fixes it again.
-
-
-
-
-
-
-
-
-
-
-
-
-
-

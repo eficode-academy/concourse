@@ -1,4 +1,4 @@
-# Part Three - building a real pipeline
+Building a real pipeline
 
 ## Fork repo
 Go to GitHub: [https://github.com/Sharor/concourse-workshop](https://github.com/Sharor/concourse-workshop)
@@ -36,7 +36,7 @@ Insert either your password or your generated token in the password field.
 You should already be logged in from previous exercises, otherwise use:
 
 ```sh
-fly -t meetup login -c http://35.156.129.15/
+fly -t meetup login -c http://ec2-52-56-205-161.eu-west-2.compute.amazonaws.com/
 ```
 
 

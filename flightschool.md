@@ -168,7 +168,7 @@ This is basically the same commands we would use in order to run the
 tests locally if we had Ruby installed. The new bits at the start set up a few things. The
 `#!/bin/bash` is a [shebang
 line](https://en.wikipedia.org/wiki/Shebang_(Unix)) that tells the
-operating system that when we execute this file we should run is using
+operating system that when we execute this file we should run it using
 the `/bin/bash` interpreter. The `set -e -x` line is setting a few
 `bash` options. Namely, `-e` make it so the entire script fails if a
 single command fails (which is generally desirable in CI). By default, a
